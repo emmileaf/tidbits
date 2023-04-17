@@ -15,6 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
+		<gcp-libraries-bom.version>26.11.0</gcp-libraries-bom.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -26,6 +27,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!--Google Cloud Libraries BOM -->
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>libraries-bom</artifactId>
+			<version>${gcp-libraries-bom.version}</version>
+			<type>pom</type>
+			<scope>import</scope>
 		</dependency>
 	</dependencies>
 
