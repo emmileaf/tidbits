@@ -5,7 +5,5 @@
   ],
   "baseBranches": ["main"],
   "icludePaths": ["dependency-update-test/**"],
-  "labels": [
-		"dependencies"
-	]
+  "labels": ["dependencies"]
 }
