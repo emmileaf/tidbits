@@ -1,0 +1,41 @@
+name: Test Action
+on:
+  workflow_dispatch:
+  pull_request:
+jobs:
+  testPushCommit:
+    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.actor == 'renovate[bot]' && github.event.action == 'opened') }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get branch name
+        id: get_branch_name
+        continue-on-error: false
+        run: |
+          set -x
+          if ${{ github.event_name == 'pull_request' }}; then
+            echo "Branch name from PR event: $GITHUB_HEAD_REF"
+            echo "BRANCH_NAME=$GITHUB_HEAD_REF" >> $GITHUB_OUTPUT
+          else
+            echo "Branch name from manual trigger: $GITHUB_REF_NAME"
+            echo "BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
+          fi
+      - name: Fail if PR not matching expected branch
+        continue-on-error: false
+        if: ${{ !startsWith(steps.get_branch_name.outputs.BRANCH_NAME, 'renovate-bot:renovate/gcp-libraries-bom.version') }}
+        run: |
+          echo "This workflow should only be auto-triggered from a renovate-bot branch to update libraries-bom"
+          echo "Stopping workflow triggered from branch: ${{ steps.get_branch_name.outputs.BRANCH_NAME }}"
+          exit 1
+      - name: Test push new file
+        continue-on-error: false
+        run: |
+          echo "Hello world" > test.txt
+          
+          git config user.email "emmileaf@users.noreply.github.com"
+          git config user.name "Emily Wang"
+          
+          git checkout $BRANCH_NAME
+          git add test.txt
+          git commit -m "test: add file"
+          git push --set-upstream origin $BRANCH_NAME
