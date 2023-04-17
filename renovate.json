@@ -4,6 +4,6 @@
     "config:base"
   ],
   "baseBranches": ["main"],
-  "icludePaths": ["dependency-update-test/**"],
+  "includePaths": ["dependency-update-test/**"],
   "labels": ["dependencies"]
 }
