@@ -4,8 +4,8 @@ on:
   pull_request:
 jobs:
   testPushCommit:
-    # if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.actor == 'renovate[bot]' && github.event.action == 'opened') }}
-    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.event.action == 'opened') }}
+    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.actor == 'renovate-bot' && github.event.action == 'opened') }}
+    # if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.event.action == 'opened') }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -15,6 +15,9 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           echo "Actor from PR event: $GITHUB_ACTOR"
+          echo "PR head repo full name: $REPO_NAME"
+        env:
+          REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Get branch name
         id: get_branch_name
         continue-on-error: false
@@ -27,22 +30,35 @@ jobs:
             echo "Branch name from manual trigger: $GITHUB_REF_NAME"
             echo "BRANCH_NAME=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
           fi
-#      - name: Fail if PR not matching expected branch
-#        continue-on-error: false
-#        if: ${{ !startsWith(steps.get_branch_name.outputs.BRANCH_NAME, 'renovate-bot:renovate/gcp-libraries-bom.version') }}
-#        run: |
-#          echo "This workflow should only be auto-triggered from a renovate-bot branch to update libraries-bom"
-#          echo "Stopping workflow triggered from branch: ${{ steps.get_branch_name.outputs.BRANCH_NAME }}"
-#          exit 1
-#      - name: Test push new file
-#        continue-on-error: false
-#        run: |
-#          echo "Hello world" > test.txt
-#
-#          git config user.email "emmileaf@users.noreply.github.com"
-#          git config user.name "Emily Wang"
-#
-#          git checkout $BRANCH_NAME
-#          git add test.txt
-#          git commit -m "test: add file"
-#          git push --set-upstream origin $BRANCH_NAME
+      - name: Fail if PR not matching expected branch
+        continue-on-error: false
+        if: ${{ !startsWith(steps.get_branch_name.outputs.BRANCH_NAME, 'renovate/gcp-libraries-bom.version') }}
+        run: |
+          echo "This workflow should only be triggered from a renovate-bot branch to update libraries-bom"
+          echo "Stopping workflow triggered from branch: ${{ steps.get_branch_name.outputs.BRANCH_NAME }}"
+          exit 1
+      - name: Test push new file
+        continue-on-error: false
+        run: |
+          echo "Hello world" > test.txt
+          git stash push test.txt
+
+          git config user.email "emmileaf@users.noreply.github.com"
+          git config user.name "Emily Wang"
+
+          if ${{ (github.event_name == 'pull_request') && (github.event.pull_request.head.repo.fork) }}; then
+            git fetch $RENOVATE_FORK $BRANCH_NAME
+            git checkout FETCH_HEAD
+            git stash pop
+            git add test.txt
+            git commit -m "test: add file"
+            git push $RENOVATE_FORK HEAD:$BRANCH_NAME
+          else
+            git checkout $BRANCH_NAME
+            git stash pop
+            git add test.txt
+            git commit -m "test: add file"
+            git push -u origin $BRANCH_NAME
+          fi
+        env:
+          RENOVATE_FORK: "https://github.com/renovate-bot/emmileaf-_-tidbits.git"
