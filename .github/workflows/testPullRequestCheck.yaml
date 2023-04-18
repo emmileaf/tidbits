@@ -4,10 +4,7 @@ on:
   pull_request_review:
 jobs:
   updateGenerateLibrariesCheck:
-    if: |
-      (startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom')) &&
-      ((github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')) ||
-      (github.event_name == 'pull_request_review' && github.event.action == 'submitted'))
+    if: ${{ startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom')) }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
