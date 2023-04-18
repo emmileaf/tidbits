@@ -4,7 +4,7 @@ on:
   pull_request_review:
 jobs:
   updateGenerateLibrariesCheck:
-    if: ${{ startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom')) }}
+    if: ${{ startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
