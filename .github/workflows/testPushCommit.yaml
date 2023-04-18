@@ -41,7 +41,8 @@ jobs:
         continue-on-error: false
         run: |
           echo "Hello world" > test.txt
-          git stash push test.txt
+          git add test.txt
+          git stash push -- test.txt
 
           git config user.email "emmileaf@users.noreply.github.com"
           git config user.name "Emily Wang"
