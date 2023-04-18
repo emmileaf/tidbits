@@ -1,25 +1,21 @@
 name: Test Action
 on:
-  pull_request:
-    types:
-      - opened
   workflow_dispatch:
     inputs:
       branch_name:
-        description: name of branch to push update commit to
+        description: PR branch name
         required: true
         default: "renovate/gcp-libraries-bom.version"
       forked_repo:
-        description: full repo name if branch is in forked repo
+        description: PR repo name (if fork)
         required: false
         default: "renovate-bot/emmileaf-_-tidbits"
+  pull_request:
+    types: [opened]
 
 jobs:
   testPushCommit:
-    if: |
-    github.event_name == 'workflow_dispatch' || 
-    startsWith(github.event.pull_request.head.ref, 'renovate/gcp-libraries-bom.version') || 
-    startsWith(github.event.pull_request.head.ref, 'dependabot/maven/com.google.cloud-libraries-bom')
+    if: ${{ (github.event_name == 'workflow_dispatch') || startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom') }}
     # if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.actor == 'renovate-bot' && github.event.action == 'opened') }}
     # if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'pull_request' && github.event.action == 'opened') }}
     runs-on: ubuntu-20.04
@@ -39,7 +35,7 @@ jobs:
         env:
           HEAD_REPO_NAME: ${{ github.event.pull_request.head.repo.full_name }}
           BASE_REPO_NAME: ${{ github.event.pull_request.base.repo.full_name }}
-          PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+          PR_BRANCH_NAME: ${{ github.head_ref }}
 #      - name: Get branch name
 #        id: get_branch_name
 #        continue-on-error: false
