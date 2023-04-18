@@ -1,8 +1,5 @@
 name: Test Action
 on:
-  pull_request:
-    types:
-      - opened
   workflow_dispatch:
     inputs:
       branch_name:
@@ -13,6 +10,8 @@ on:
         description: full repo name if branch is in forked repo
         required: false
         default: "renovate-bot/emmileaf-_-tidbits"
+  pull_request:
+    types: [opened]
 
 jobs:
   testPushCommit:
