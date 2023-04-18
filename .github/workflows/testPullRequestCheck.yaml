@@ -1,11 +1,13 @@
 name: Test Pull Request Check
 on:
   pull_request:
+  pull_request_review:
 jobs:
   updateGenerateLibrariesCheck:
     if: |
-      (github.event.action == 'opened' || github.event.action == 'edited' || github.event.action == 'reopened') && 
-      (startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom'))
+      (startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom')) &&
+      ((github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')) ||
+      (github.event_name == 'pull_request_review' && github.event.action == 'submitted'))
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
