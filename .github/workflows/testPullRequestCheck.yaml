@@ -1,0 +1,20 @@
+name: Test Pull Request Check
+on:
+  pull_request:
+jobs:
+  updateGenerateLibrariesCheck:
+    if: |
+      (github.event.action == 'opened' || github.event.action == 'edited' || github.event.action == 'reopened') && 
+      (startsWith(github.head_ref, 'renovate/gcp-libraries-bom.version') || startsWith(github.head_ref, 'dependabot/maven/com.google.cloud-libraries-bom'))
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check for update commit
+        continue-on-error: false
+        run: |
+          if [[ $(git log --author="Emily Wang" | grep -m 1 'test') -eq '' ]]; then
+            echo "Update commit not found, please trigger workflow."
+            exit 1
+          else
+            echo "Update commit found."
+          fi
