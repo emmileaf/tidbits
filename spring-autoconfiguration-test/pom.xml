@@ -38,11 +38,11 @@
 			<artifactId>google-cloud-language-spring-starter</artifactId>
 			<version>${spring-cloud-gcp.version}-preview</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.google.cloud</groupId>-->
-<!--			<artifactId>google-cloud-compute-spring-starter</artifactId>-->
-<!--			<version>${spring-cloud-gcp.version}-preview</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-compute-spring-starter</artifactId>
+			<version>${spring-cloud-gcp.version}-preview</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
