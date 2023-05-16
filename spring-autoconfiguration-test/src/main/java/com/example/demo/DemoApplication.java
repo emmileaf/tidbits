@@ -20,27 +20,27 @@ import java.io.IOException;
 @RestController
 public class DemoApplication {
 
-//    @Value( "${compute-project}" )
-//    private String project;
-//
-//    @Value( "${compute-zone}" )
-//    private String zone;
+    @Value( "${compute-project}" )
+    private String project;
+
+    @Value( "${compute-zone}" )
+    private String zone;
 
     @Autowired
     private LanguageServiceClient languageAutoClient;
 
-//    @Autowired
-//    private InstancesClient instancesAutoClient;
+    @Autowired
+    private InstancesClient instancesAutoClient;
 
-//    @GetMapping("/compute")
-//    void compute() throws IOException {
-//
-//        System.out.printf("Listing instances from %s in %s:", project, zone);
-//        for (Instance zoneInstance : instancesAutoClient.list(project, zone).iterateAll()) {
-//            System.out.println(zoneInstance.getName());
-//        }
-//        System.out.println("####### Listing instances complete #######");
-//    }
+    @GetMapping("/compute")
+    void compute() throws IOException {
+
+        System.out.printf("Listing instances from %s in %s:", project, zone);
+        for (Instance zoneInstance : instancesAutoClient.list(project, zone).iterateAll()) {
+            System.out.println(zoneInstance.getName());
+        }
+        System.out.println("####### Listing instances complete #######");
+    }
 
     @GetMapping("/language")
     String language() throws IOException {
